@@ -1,7 +1,14 @@
 -- handler.lua
-local typedefs = require "kong.db.schema.typedefs"
+-- luacheck: globals ngx kong
+-- OR
+-- cache globals into locals for faster access and to satisfy luacheck
+-- local ngx = ngx
+-- local kong = kong
+
+-- local typedefs = require "kong.db.schema.typedefs"
+-- local str = require "resty.string"
+
 local resty_sha256 = require "resty.sha256"
-local str = require "resty.string"
 local bit = require "bit"  -- Added: required for bxor
 
 local ShopifyHmacAuth = {
@@ -49,6 +56,7 @@ local function secure_compare(a, b)
   return diff == 0
 end
 
+-- luacheck: ignore self
 function ShopifyHmacAuth:access(conf)
   local headers = ngx.req.get_headers()
   local shopify_hmac = headers["x-shopify-hmac-sha256"]
@@ -78,7 +86,8 @@ function ShopifyHmacAuth:access(conf)
 
   -- Compute expected HMAC
   local digest = hmac_sha256(conf.secret, body)
-  local encoded = ngx.encode_base64(digest, false)  -- Don't strip padding, shopify send header with padding i.e. xxxxxx=
+  -- Don't strip padding, shopify sends header with padding i.e. xxxxxx=
+  local encoded = ngx.encode_base64(digest, false)
 
   -- Compare securely
   if not secure_compare(encoded, shopify_hmac) then

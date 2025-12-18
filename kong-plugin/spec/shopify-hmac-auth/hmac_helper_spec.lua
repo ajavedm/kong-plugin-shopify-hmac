@@ -1,4 +1,9 @@
 -- spec/hmac_helper_spec.lua
+
+local helpers = require "spec.shopify-hmac-auth.spec_helper"
+local ngx = helpers.ngx
+-- local kong = helpers.kong
+
 local resty_sha256 = require "resty.sha256"
 local bit = require "bit"
 
@@ -38,8 +43,9 @@ describe("HMAC-SHA256 Helper", function()
     local encoded = ngx.encode_base64(digest)  -- includes padding
 
     -- Known good value generated via Python
-    -- python3 -c "import hmac, hashlib, base64; print(base64.b64encode(hmac.new(b'hush', b'{\"order\":{\"id\":123}}', hashlib.sha256).digest()).decode())"
-    local expected = "Jdz2Uv/Zv6PbEal6j+hkSiDYYfFkYqRwOR+CBOiulIE="
+    -- python3 -c "import hmac, hashlib, base64; print(base64.b64encode(hmac.new(
+    --   b'hush', b'{\"order\":{\"id\":123}}', hashlib.sha256).digest()).decode())"
+    local expected = "wFm4eKfwLGyYqOJyoXCW38u4PMaCXzvVjZLwUGXVv9k="
 
     assert.equal(expected, encoded)
   end)

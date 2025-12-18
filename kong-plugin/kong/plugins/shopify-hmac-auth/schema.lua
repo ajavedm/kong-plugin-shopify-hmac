@@ -1,8 +1,10 @@
 -- schema.lua
 local typedefs = require "kong.db.schema.typedefs"
 
-return {
-  name = "shopify-hmac-auth",
+local PLUGIN_NAME = "shopify-hmac-auth"
+
+local schema = {
+  name = PLUGIN_NAME,
   fields = {
     { consumer = typedefs.no_consumer },
     {
@@ -27,3 +29,5 @@ return {
   },
   entity_checks = {}
 }
+
+return schema
